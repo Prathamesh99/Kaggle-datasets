@@ -22,5 +22,43 @@ test.Fare = test.Fare.transform(lambda x: x.fillna(x.median()))
 test.apply(lambda x: sum(x.isnull()))
 train.Embarked = train.Embarked.transform(lambda x: x.fillna('S'))
 
-train.shape
-test.shape
+y_train = train.Survived
+x_train = train.drop(['Survived'], axis=1, inplace=True)
+
+replace_emb = {'C':0, 'Q':1, 'S':2}
+train.Embarked = train.Embarked.replace(replace_emb)
+test.Embarked = test.Embarked.replace(replace_emb)
+
+X_train = train
+X_test = test
+
+from sklearn.linear_model import LogisticRegression
+
+logreg = LogisticRegression()
+logreg.fit(X_train, y_train)
+y = logreg.predict(X_train)
+
+
+from sklearn import metrics
+print(metrics.accuracy_score(y_train, y))
+
+from sklearn import tree
+model = tree.DecisionTreeClassifier(criterion='gini')
+
+model.fit(X_train, y_train)
+y_pred = model.predict(X_train)
+print(metrics.accuracy_score(y_train, y_pred))
+y_new = model.predict(X_test)
+
+
+
+
+
+
+
+
+
+
+
+
+
